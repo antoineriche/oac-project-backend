@@ -1,6 +1,7 @@
 package com.gaminho.oacproject.dao;
 
 import com.gaminho.oacproject.model.Todo;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class TodoDaoImpl implements TodoDao {
 
     @Override
     public Todo save(Todo todo) {
+        System.out.println("save new todo");
         TODOS.add(todo);
         return todo;
     }

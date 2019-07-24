@@ -3,9 +3,13 @@ package com.gaminho.oacproject.web.contoller;
 import com.gaminho.oacproject.dao.TodoDao;
 import com.gaminho.oacproject.model.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -26,8 +30,21 @@ public class TodoController {
     }
 
     @PostMapping(value = "/todos")
-    public Todo createTodo(@Valid @RequestBody Todo todo){
-        return todoDao.save(todo);
+    public ResponseEntity<Todo> createTodo(@Valid @RequestBody Todo todo){
+        Todo newTodo = todoDao.save(todo);
+
+        if (newTodo == null) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+//            URI location = ServletUriComponentsBuilder
+//                    .fromCurrentRequest()
+//                    .path("/{id}")
+//                    .buildAndExpand(newTodo.getId())
+//                    .toUri();
+
+            return new ResponseEntity<>(newTodo, HttpStatus.CREATED);
+        }
     }
 
 }
