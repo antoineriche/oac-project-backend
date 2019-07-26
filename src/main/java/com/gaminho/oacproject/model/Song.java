@@ -6,33 +6,21 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class Todo {
+public class Song {
 
     @Id
     @GeneratedValue
     private long id;
-    private long userId;
     private String title;
-    private boolean completed;
     private Date creationDate;
 
-    public Todo() {
+    public Song() {
     }
 
-    public Todo(long id, long userId, String title, boolean completed, Date creationDate) {
+    public Song(long id, String title, Date creationDate) {
         this.id = id;
-        this.userId = userId;
         this.title = title;
-        this.completed = completed;
         this.creationDate = creationDate;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public long getId() {
@@ -51,14 +39,6 @@ public class Todo {
         this.title = title;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
@@ -69,11 +49,9 @@ public class Todo {
 
     @Override
     public String toString() {
-        return "Todo{" +
+        return "Song{" +
                 "id=" + id +
-                ", userId=" + userId +
                 ", title='" + title + '\'' +
-                ", completed=" + completed +
                 ", creationDate=" + creationDate +
                 '}';
     }

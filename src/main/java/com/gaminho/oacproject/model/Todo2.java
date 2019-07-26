@@ -1,25 +1,23 @@
 package com.gaminho.oacproject.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import java.util.Date;
 
-@Entity
-public class Todo {
+//@JsonIgnoreProperties(value = {"creationDate", "id"})
+@JsonFilter("todoFilter")
+public class Todo2 {
 
-    @Id
-    @GeneratedValue
     private long id;
     private long userId;
     private String title;
     private boolean completed;
     private Date creationDate;
 
-    public Todo() {
+    public Todo2() {
     }
 
-    public Todo(long id, long userId, String title, boolean completed, Date creationDate) {
+    public Todo2(long id, long userId, String title, boolean completed, Date creationDate) {
         this.id = id;
         this.userId = userId;
         this.title = title;
