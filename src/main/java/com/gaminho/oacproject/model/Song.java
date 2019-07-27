@@ -1,5 +1,7 @@
 package com.gaminho.oacproject.model;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -54,5 +56,10 @@ public class Song {
                 ", title='" + title + '\'' +
                 ", creationDate=" + creationDate +
                 '}';
+    }
+
+    public static boolean isValid(Song songToValidate){
+        return songToValidate != null
+                && StringUtils.isNotEmpty(songToValidate.getTitle());
     }
 }
