@@ -51,7 +51,7 @@ public class SongService {
     public String deleteSong(long id){
         Optional<Song> song = songRepository.findById(id);
         if(song.isPresent()) {
-            songRepository.delete(song.get());
+            songRepository.deleteById(id);
             return "Song has been deleted";
         } else {
             return "Song with id " + id + " does not exist";
@@ -65,7 +65,7 @@ public class SongService {
         if(oldSong.isPresent()) {
             Song song = oldSong.get();
             song.setTitle(updatedSong.getTitle());
-            song = songRepository.saveAndFlush(song);
+            songRepository.flush();
             return song;
         } else {
             throw new SongException("Song with id " + id + " does not exist");
