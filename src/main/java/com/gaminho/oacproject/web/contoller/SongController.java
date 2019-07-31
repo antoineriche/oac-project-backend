@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @CrossOrigin(value = "http://localhost:4200")
@@ -25,8 +26,10 @@ public class SongController {
     @GetMapping(value = "/songs")
     public ResponseEntity<?> getAllSongs(){
         try {
-            return ResponseEntity.ok(songService.getAllSongs());
-        } catch (SongException e){  // No Songs Exception
+            List<Song> list = songService.getAllSongs();
+            return ResponseEntity.ok(list);
+        } catch (SongException e){
+//            return ResponseEntity.noContent().build();
             return ResponseEntity.ok(e.getMessage());
         }
     }
@@ -66,7 +69,6 @@ public class SongController {
         }
     }
 
-
     /**
      * PUT /songs/:id : update the song with given id
      * @param id id of the song to update
@@ -87,7 +89,6 @@ public class SongController {
         }
     }
 
-
     /**
      * DELETE /songs/:id : delete the song with given id
      * @param id id of the song to delete
@@ -95,7 +96,7 @@ public class SongController {
      */
     //TODO verify negative id or null id
     @DeleteMapping(value="/songs/{id}")
-    public ResponseEntity deleteSong(@PathVariable(value = "id") long id) {
+    public ResponseEntity<?> deleteSong(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(songService.deleteSong(id));
     }
 

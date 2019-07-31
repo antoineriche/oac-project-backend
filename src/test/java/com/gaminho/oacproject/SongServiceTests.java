@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class OacprojectApplicationTests {
+public class SongServiceTests {
 
 	private static Song SONG_1 = new Song(1L, "SONG1", new Date());
 	private static Song SONG_2 = new Song(2L, "SONG2", new Date());
@@ -68,13 +68,11 @@ public class OacprojectApplicationTests {
 
 	@Test
 	public void testGetSongById(){
-		Song song = new Song();
-		song.setId(4L);
-		song.setTitle("4L");
-		when(songRepository.findById(4L)).thenReturn(Optional.of(song));
-		assertTrue(songRepository.findById(song.getId()).isPresent());
-		Song s = songService.getSongWithId(song.getId());
-		assertEquals(s, song);
+		when(songRepository.findById(SONG_1.getId())).thenReturn(Optional.of(SONG_1));
+
+		assertTrue(songRepository.findById(SONG_1.getId()).isPresent());
+		Song s = songService.getSongWithId(SONG_1.getId());
+		assertEquals(s, SONG_1);
 	}
 
 	@Test
@@ -85,36 +83,30 @@ public class OacprojectApplicationTests {
 	}
 
 	// DELETE SONG
+
 	@Test
 	public void testDeleteSongById(){
+		when(songRepository.findById(SONG_1.getId())).thenReturn(Optional.of(SONG_1));
 
-		Song song = new Song();
-		song.setId(8L);
-		song.setTitle("te");
-		when(songRepository.findById(8L)).thenReturn(Optional.of(song));
-		assertTrue(songRepository.findById(8L).isPresent());
-
-		String ss = songService.deleteSong(8L);
-		verify(songRepository, times(1)).deleteById(8L);
-		assertEquals("Song has been deleted", ss);
+		String s = songService.deleteSong(SONG_1.getId());
+		verify(songRepository, times(1)).deleteById(SONG_1.getId());
+		assertEquals("Song has been deleted", s);
 	}
 
 	@Test
 	public void testDeleteSongByIdWithNoSong(){
-		String ss = songService.deleteSong(8L);
+		String s = songService.deleteSong(8L);
 		assertFalse(songRepository.findById(8L).isPresent());
-		assertEquals("Song with id 8 does not exist", ss);
+		assertEquals("Song with id 8 does not exist", s);
 	}
+
+	// SAVE SONG
 
 	@Test
 	public void testSavingSong(){
-		Song song = new Song();
-		song.setId(59L);
-		song.setTitle("cas");
-
-		when(songRepository.save(song)).thenReturn(song);
-		Song newSong = songService.saveSong(song);
-		assertEquals(song, newSong);
+		when(songRepository.save(SONG_1)).thenReturn(SONG_1);
+		Song newSong = songService.saveSong(SONG_1);
+		assertEquals(SONG_1, newSong);
 	}
 
 	@Test
@@ -128,37 +120,46 @@ public class OacprojectApplicationTests {
 		songService.saveSong(song);
 	}
 
+	// UPDATE SONG
+
 	@Test
 	public void testUpdatingSong(){
 
-		Song song = new Song();
-		song.setId(1L);
-		song.setTitle("init");
-
-		when(songRepository.findById(1L)).thenReturn(Optional.of(song));
+		when(songRepository.findById(SONG_1.getId())).thenReturn(Optional.of(SONG_1));
 
 		Song songUpdate = new Song();
-		songUpdate.setId(song.getId());
+		songUpdate.setId(SONG_1.getId());
 		songUpdate.setTitle("update");
 
-		when(songRepository.findById(song.getId())).thenReturn(Optional.of(songUpdate));
+		when(songRepository.findById(songUpdate.getId())).thenReturn(Optional.of(songUpdate));
 
-		Song s2 = songService.updateSong(song.getId(), songUpdate);
-		assertEquals(s2.getId(), songUpdate.getId());
-		assertEquals(s2.getTitle(), songUpdate.getTitle());
+		Song s2 = songService.updateSong(songUpdate.getId(), songUpdate);
+		assertEquals(s2, songUpdate);
 	}
 
 	@Test
 	public void testUpdatingSongWithException() throws SongException {
 		expectedEx.expect(SongException.class);
 		expectedEx.expectMessage("Song with id 8 does not exist");
+		songService.updateSong(8L, SONG_1);
+	}
 
-		Song song = new Song();
-		song.setId(1L);
-		song.setTitle("init");
+	// DELETE ALL
 
-		when(songRepository.findById(1L)).thenReturn(Optional.of(song));
-		songService.updateSong(8L, song);
+	@Test
+	public void testDeleteAllSongsWithEmptyList() {
+		String s = songService.deleteAllSongs();
+		assertEquals(s, "No song in database");
+	}
+
+	@Test
+	public void testDeleteAllSongs() {
+		List<Song> list = initList();
+		when(songRepository.count()).thenReturn(Long.valueOf(list.size()));
+
+		String s = songService.deleteAllSongs();
+		assertEquals(s,
+				String.format("%d songs have been deleted", list.size()));
 	}
 
 	private static List<Song> initList(){
