@@ -30,7 +30,7 @@ public class SongService {
     public List<Song> getAllSongs(){
         List<Song> songs = songRepository.findAll();
         if(songs.isEmpty()) {
-            throw new SongException("No songs");
+            throw new SongException(SongException.NO_SONG);
         } else {
             return songs;
         }
@@ -44,6 +44,20 @@ public class SongService {
             return songRepository.save(songToSave);
         } else {
             throw new SongException("Invalid song");
+        }
+    }
+
+    @Transactional
+    public Song updateSong(long id, Song updatedSong){
+        Optional<Song> oldSong = songRepository.findById(id);
+
+        if(oldSong.isPresent()) {
+            Song song = oldSong.get();
+            song.setTitle(updatedSong.getTitle());
+            songRepository.flush();
+            return song;
+        } else {
+            throw new SongException("Song with id " + id + " does not exist");
         }
     }
 
@@ -62,25 +76,12 @@ public class SongService {
     //TODO test
     @Transactional
     public String deleteAllSongs(){
-        if(songRepository.count() > 0) {
+        long count = songRepository.count();
+        if(count > 0) {
             songRepository.deleteAll();
-            return String.format("%d songs have been deleted", songRepository.count());
+            return String.format("%d songs have been deleted", count);
         } else {
             return "No song in database";
-        }
-    }
-
-    @Transactional
-    public Song updateSong(long id, Song updatedSong){
-        Optional<Song> oldSong = songRepository.findById(id);
-
-        if(oldSong.isPresent()) {
-            Song song = oldSong.get();
-            song.setTitle(updatedSong.getTitle());
-            songRepository.flush();
-            return song;
-        } else {
-            throw new SongException("Song with id " + id + " does not exist");
         }
     }
 }

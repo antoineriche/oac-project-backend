@@ -1,4 +1,4 @@
-package com.gaminho.oacproject;
+package com.gaminho.oacproject.song;
 
 import com.gaminho.oacproject.model.Song;
 import org.junit.Test;
@@ -26,9 +26,7 @@ public class SongTests {
 
         final Date dResult = song.getCreationDate();
 
-        //then
-        assertEquals(date, song.getCreationDate());
-//        assertEquals("field wasn't retrieved properly", dResult, date);
+        assertEquals(date, dResult);
     }
 
     @Test
