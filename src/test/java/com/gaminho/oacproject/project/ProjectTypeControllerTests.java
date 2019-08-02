@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.gaminho.oacproject.utils.DefaultValues.*;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -51,13 +51,14 @@ public class ProjectTypeControllerTests {
         list.add(DEFAULT_PROJECT_TYPE_1);
         list.add(DEFAULT_PROJECT_TYPE_2);
         when(typeService.getAllProjectTypes()).thenReturn(list);
+
         ResponseEntity<?> resp = typeController.getAllProjectTypes();
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
         assertEquals(list, resp.getBody());
     }
 
     @Test
-    public void test_getAllTypesWithEmptyDB() {
+    public void test_getAllTypesWithEmptyDB() throws NoTypeException {
         when(typeService.getAllProjectTypes()).thenThrow(new NoTypeException());
         ResponseEntity<?> resp = typeController.getAllProjectTypes();
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
@@ -140,15 +141,40 @@ public class ProjectTypeControllerTests {
 
     @Test
     public void test_deleteType(){
-        when(typeService.deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId()))
-                .thenReturn(String.format("Project type with id %d does not exist.",
-                        DEFAULT_PROJECT_TYPE_1.getId()));
-
+        doNothing().when(typeService).deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
         ResponseEntity<?> resp = typeController.deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+    }
+
+    @Test
+    public void test_deleteTypeWithNotFoundException() throws TypeNotFoundException {
+        doThrow(new TypeNotFoundException(DEFAULT_PROJECT_TYPE_1.getId()))
+                .when(typeService).deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
+
+        ResponseEntity<?> resp = typeController
+                .deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
         assertEquals(
-                String.format("Project type with id %d does not exist.", DEFAULT_MC_1.getId()),
+                String.format("Project type with id %d does not exist.", DEFAULT_PROJECT_TYPE_1.getId()),
                 resp.getBody());
+
+    }
+
+    // DELETE ALL
+
+    @Test
+    public void test_deleteAllTypes() {
+        doNothing().when(typeService).deleteAllTypes();
+        ResponseEntity<?> resp = typeController.deleteAllProjectTypes();
+        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+    }
+
+    @Test
+    public void test_deleteAllTypesWithNoTypeException() throws NoTypeException {
+        doThrow(new NoTypeException()).when(typeService).deleteAllTypes();
+
+        ResponseEntity<?> resp = typeController.deleteAllProjectTypes();
+        assertEquals(HttpStatus.NO_CONTENT.value(), resp.getStatusCodeValue());
     }
 
 }

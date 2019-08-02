@@ -114,6 +114,7 @@ public class ProjectTypeServiceTests {
 
 		ProjectType projectTypeUpdate = new ProjectType();
 		projectTypeUpdate.setId(DEFAULT_PROJECT_TYPE_1.getId());
+		projectTypeUpdate.setLabel("test");
 
 		when(typeRepository.findById(projectTypeUpdate.getId())).thenReturn(Optional.of(projectTypeUpdate));
 
@@ -135,36 +136,32 @@ public class ProjectTypeServiceTests {
 		when(typeRepository.findById(DEFAULT_PROJECT_TYPE_1.getId()))
 				.thenReturn(Optional.of(DEFAULT_PROJECT_TYPE_1));
 
-		String s = typeService.deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
+		typeService.deleteProjectType(DEFAULT_PROJECT_TYPE_1.getId());
 		verify(typeRepository, times(1)).deleteById(DEFAULT_PROJECT_TYPE_1.getId());
-		assertEquals("Project type has been deleted", s);
 	}
 
 	@Test
-	public void test_deleteTypeByIdWithNotFoundException(){
-		String s = typeService.deleteProjectType(8L);
-		assertFalse(typeRepository.findById(8L).isPresent());
-		assertEquals("Project type with id 8 does not exist", s);
+	public void test_deleteTypeByIdWithNotFoundException() throws TypeNotFoundException {
+		expectedEx.expect(TypeNotFoundException.class);
+		expectedEx.expectMessage("Project type with id 8 does not exist.");
+		typeService.deleteProjectType(8L);
 	}
 
 	// DELETE ALL
 
 	@Test
 	public void test_deleteAllTypes() {
-		List<ProjectType> list = new ArrayList<>();
-		list.add(DEFAULT_PROJECT_TYPE_1);
-		list.add(DEFAULT_PROJECT_TYPE_2);
-		when(typeRepository.count()).thenReturn(Long.valueOf(list.size()));
-
-		String s = typeService.deleteAllTypes();
-		assertEquals(s,
-				String.format("%d project types have been deleted", list.size()));
+		when(typeRepository.count()).thenReturn(2L);
+		typeService.deleteAllTypes();
+		verify(typeRepository, times(1)).deleteAll();
 	}
 
 	@Test
-	public void test_deleteAllTypesWithEmptyList() {
-		String s = typeService.deleteAllTypes();
-		assertEquals(s, "No project type in database");
+	public void test_deleteAllTypesWithEmptyList() throws NoTypeException {
+		expectedEx.expect(NoTypeException.class);
+		expectedEx.expectMessage("No project type.");
+		when(typeRepository.count()).thenReturn(0L);
+		typeService.deleteAllTypes();
 	}
 
 }

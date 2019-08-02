@@ -3,6 +3,8 @@ package com.gaminho.oacproject.web.contoller;
 import com.gaminho.oacproject.exception.mc.InvalidMCException;
 import com.gaminho.oacproject.exception.mc.MCNotFoundException;
 import com.gaminho.oacproject.exception.mc.NoMCException;
+import com.gaminho.oacproject.exception.project.TypeNotFoundException;
+import com.gaminho.oacproject.exception.song.NoSongException;
 import com.gaminho.oacproject.model.MC;
 import com.gaminho.oacproject.web.service.MCService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +101,26 @@ public class MCController {
     //TODO verify negative id or null id
     @DeleteMapping(value="/mcs/{id}")
     public ResponseEntity<?> deleteMC(@PathVariable(value = "id") long id) {
-        return ResponseEntity.ok(mcService.deleteMC(id));
+        try {
+            mcService.deleteMC(id);
+            return ResponseEntity.ok().build();
+        } catch (MCNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * DELETE /mcs : delete all mcs
+     * @return ResponseEntity with status 200 (OK) and a string as body indicating the action done
+     */
+    @DeleteMapping(value="/mcs")
+    public ResponseEntity<?> deleteAllMCs() {
+        try {
+            mcService.deleteAllMCs();
+            return ResponseEntity.ok().build();
+        } catch (NoMCException e) {
+            return ResponseEntity.noContent().build();
+        }
     }
 
 }

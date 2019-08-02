@@ -60,25 +60,21 @@ public class ProjectTypeService {
     }
 
     @Transactional
-    //FIXME try to parse msg as JSON but it's string
-    public String deleteProjectType(long id){
+    public void deleteProjectType(long id){
         Optional<ProjectType> oldType = typeRepository.findById(id);
         if(oldType.isPresent()) {
             typeRepository.deleteById(id);
-            return "Project type has been deleted";
         } else {
-            return "Project type with id " + id + " does not exist";
+            throw new TypeNotFoundException(id);
         }
     }
 
     @Transactional
-    public String deleteAllTypes(){
-        long count = typeRepository.count();
-        if(count > 0) {
+    public void deleteAllTypes(){
+        if( typeRepository.count() > 0) {
             typeRepository.deleteAll();
-            return String.format("%d project types have been deleted", count);
         } else {
-            return "No project type in database";
+            throw new NoTypeException();
         }
     }
 }

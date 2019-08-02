@@ -46,7 +46,7 @@ public class MCServiceTests {
 	// GET ALL MCs
 
 	@Test
-	public void testGetAllSongs() {
+	public void test_getAllMCs() {
 		List<MC> list = new ArrayList<>();
 		list.add(DEFAULT_MC_1);
 		list.add(DEFAULT_MC_2);
@@ -59,7 +59,7 @@ public class MCServiceTests {
 	}
 
 	@Test
-	public void testGetAllSongsWithVoidList() throws NoMCException {
+	public void test_getAllMCsWithEmptyDB() throws NoMCException {
 		expectedEx.expect(NoMCException.class);
 		expectedEx.expectMessage("No MC.");
 		mcService.getAllMCs();
@@ -68,7 +68,7 @@ public class MCServiceTests {
 	// GET MC BY ID
 
 	@Test
-	public void testGetMCById(){
+	public void test_getMCById(){
 		when(mcRepository.findById(DEFAULT_MC_1.getId()))
 				.thenReturn(Optional.of(DEFAULT_MC_1));
 
@@ -78,7 +78,7 @@ public class MCServiceTests {
 	}
 
 	@Test
-	public void testGetMCByIdNotFoundException() throws MCNotFoundException {
+	public void test_getMCByIdWithNotFoundException() throws MCNotFoundException {
 		expectedEx.expect(MCNotFoundException.class);
 		expectedEx.expectMessage("MC with id 3 does not exist.");
 		mcService.getMCWithId(3);
@@ -87,14 +87,14 @@ public class MCServiceTests {
 	// SAVE MC
 
 	@Test
-	public void testSavingMC(){
+	public void test_saveMC(){
 		when(mcRepository.save(DEFAULT_MC_1)).thenReturn(DEFAULT_MC_1);
 		MC newMC = mcService.saveMC(DEFAULT_MC_1);
 		assertEquals(DEFAULT_MC_1, newMC);
 	}
 
 	@Test
-	public void testSavingMCWithoutNameThrowException() throws InvalidMCException {
+	public void test_saveMCWithInvalidData() throws InvalidMCException {
 		expectedEx.expect(InvalidMCException.class);
 		expectedEx.expectMessage("Invalid MC.");
 
@@ -107,7 +107,7 @@ public class MCServiceTests {
 	// UPDATE MC
 
 	@Test
-	public void testUpdatingMC(){
+	public void test_updateMC(){
 
 		when(mcRepository.findById(DEFAULT_MC_1.getId())).thenReturn(Optional.of(DEFAULT_MC_1));
 
@@ -122,7 +122,7 @@ public class MCServiceTests {
 	}
 
 	@Test
-	public void testUpdatingSongWithException() throws MCNotFoundException {
+	public void test_updateMCWithNotFoundException() throws MCNotFoundException {
 		expectedEx.expect(MCNotFoundException.class);
 		expectedEx.expectMessage("MC with id 8 does not exist.");
 		mcService.updateMC(8L, DEFAULT_MC_1);
@@ -131,39 +131,36 @@ public class MCServiceTests {
 	// DELETE MC
 
 	@Test
-	public void testDeleteMCById(){
-		when(mcRepository.findById(DEFAULT_MC_1.getId())).thenReturn(Optional.of(DEFAULT_MC_1));
+	public void test_deleteMC(){
+		when(mcRepository.findById(DEFAULT_MC_1.getId()))
+				.thenReturn(Optional.of(DEFAULT_MC_1));
 
-		String s = mcService.deleteMC(DEFAULT_MC_1.getId());
+		mcService.deleteMC(DEFAULT_MC_1.getId());
 		verify(mcRepository, times(1)).deleteById(DEFAULT_MC_1.getId());
-		assertEquals("MC has been deleted", s);
 	}
 
 	@Test
-	public void testDeleteMCByIdWithNoMC(){
-		String s = mcService.deleteMC(8L);
-		assertFalse(mcRepository.findById(8L).isPresent());
-		assertEquals("MC with id 8 does not exist", s);
+	public void test_deleteMCByIdWithNotFoundException() throws MCNotFoundException {
+		expectedEx.expect(MCNotFoundException.class);
+		expectedEx.expectMessage("MC with id 8 does not exist.");
+		mcService.deleteMC(8L);
 	}
 
 	// DELETE ALL
 
 	@Test
-	public void testDeleteAllMCsWithEmptyList() {
-		String s = mcService.deleteAllMCs();
-		assertEquals(s, "No mc in database");
+	public void test_deleteAllMCs() {
+		when(mcRepository.count()).thenReturn(3L);
+		mcService.deleteAllMCs();
+		verify(mcRepository, times(1)).deleteAll();
 	}
 
 	@Test
-	public void testDeleteAllMCs() {
-		List<MC> list = new ArrayList<>();
-		list.add(DEFAULT_MC_1);
-		list.add(DEFAULT_MC_2);
-		when(mcRepository.count()).thenReturn(Long.valueOf(list.size()));
-
-		String s = mcService.deleteAllMCs();
-		assertEquals(s,
-				String.format("%d mcs have been deleted", list.size()));
+	public void test_deleteAllMCsWithEmptyList() throws NoMCException {
+		expectedEx.expect(NoMCException.class);
+		expectedEx.expectMessage("No MC.");
+		when(mcRepository.count()).thenReturn(0L);
+		mcService.deleteAllMCs();
 	}
 
 }

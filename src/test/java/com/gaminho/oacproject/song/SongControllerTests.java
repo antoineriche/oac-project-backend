@@ -22,10 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gaminho.oacproject.utils.DefaultValues.DEFAULT_SONG_1;
-import static com.gaminho.oacproject.utils.DefaultValues.DEFAULT_SONG_2;
+import static com.gaminho.oacproject.utils.DefaultValues.*;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -48,16 +47,7 @@ public class SongControllerTests {
     // GET ALL SONGS
 
     @Test
-    public void testGetAllSongsWithEmptyList() {
-        when(songService.getAllSongs()).thenThrow(new NoSongException());
-        ResponseEntity<?> resp = songController.getAllSongs();
-
-        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("No song.", resp.getBody());
-    }
-
-    @Test
-    public void testGetAllSongs() {
+    public void test_getAllSongs() {
         List<Song> list = new ArrayList<>();
         list.add(DEFAULT_SONG_1);
         list.add(DEFAULT_SONG_2);
@@ -67,10 +57,19 @@ public class SongControllerTests {
         assertEquals(list, resp.getBody());
     }
 
+    @Test
+    public void test_getAllSongsWithEmptyDB() throws NoSongException {
+        when(songService.getAllSongs()).thenThrow(new NoSongException());
+        ResponseEntity<?> resp = songController.getAllSongs();
+
+        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+        assertEquals("No song.", resp.getBody());
+    }
+
     // GET SONG BY ID
 
     @Test
-    public void testGetSongById(){
+    public void test_getSongById(){
         when(songService.getSongWithId(DEFAULT_SONG_1.getId())).thenReturn(DEFAULT_SONG_1);
 
         ResponseEntity<?> resp = songController.getSongWithId(DEFAULT_SONG_1.getId());
@@ -79,7 +78,7 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testGetSongByIdNoSongException() throws SongNotFoundException {
+    public void test_getSongByIdWithNotFoundException() throws SongNotFoundException {
         when(songService.getSongWithId(DEFAULT_SONG_1.getId()))
                 .thenThrow(new SongNotFoundException(DEFAULT_SONG_1.getId()));
 
@@ -90,11 +89,10 @@ public class SongControllerTests {
                 resp.getBody());
     }
 
-
     // SAVE SONG
 
     @Test
-    public void testSavingSong(){
+    public void test_saveSong(){
         when(songService.saveSong(DEFAULT_SONG_1)).thenReturn(DEFAULT_SONG_1);
 
         ResponseEntity<?> resp = songController.createSong(DEFAULT_SONG_1);
@@ -103,7 +101,7 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testSavingSongWithoutTitleThrowException() throws InvalidSongException {
+    public void test_saveSongWithInvalidData() throws InvalidSongException {
         when(songService.saveSong(DEFAULT_SONG_1)).thenThrow(new InvalidSongException());
 
         ResponseEntity<?> resp = songController.createSong(DEFAULT_SONG_1);
@@ -114,7 +112,7 @@ public class SongControllerTests {
     // UPDATE SONG
 
     @Test
-    public void testUpdatingSong(){
+    public void test_updateSong(){
         when(songService.updateSong(DEFAULT_SONG_1.getId(), DEFAULT_SONG_1))
                 .thenReturn(DEFAULT_SONG_1);
 
@@ -124,7 +122,7 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testUpdatingSongWithNotFoundSong() throws SongNotFoundException {
+    public void test_updateSongWithNotFoundException() throws SongNotFoundException {
         when(songService.updateSong(DEFAULT_SONG_1.getId(), DEFAULT_SONG_1))
                 .thenThrow(new SongNotFoundException(DEFAULT_SONG_1.getId()));
 
@@ -139,12 +137,39 @@ public class SongControllerTests {
 
     @Test
     public void testDeleteSong(){
-        when(songService.deleteSong(DEFAULT_SONG_1.getId()))
-                .thenReturn("Song with id " + DEFAULT_SONG_1.getId() + " does not exist");
-
+        doNothing().when(songService).deleteSong(DEFAULT_SONG_1.getId());
         ResponseEntity<?> resp = songController.deleteSong(DEFAULT_SONG_1.getId());
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("Song with id " + DEFAULT_SONG_1.getId() + " does not exist", resp.getBody());
+    }
+
+    @Test
+    public void test_deleteSongWithNotFoundException() throws SongNotFoundException {
+        doThrow(new SongNotFoundException(DEFAULT_SONG_1.getId()))
+                .when(songService).deleteSong(DEFAULT_SONG_1.getId());
+
+        ResponseEntity<?> resp = songController
+                .deleteSong(DEFAULT_SONG_1.getId());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
+        assertEquals(
+                String.format("Song with id %d does not exist.", DEFAULT_SONG_1.getId()),
+                resp.getBody());
+    }
+
+    // DELETE ALL
+
+    @Test
+    public void test_deleteAllSongs() {
+        doNothing().when(songService).deleteAllSongs();
+        ResponseEntity<?> resp = songController.deleteAllSongs();
+        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+    }
+
+    @Test
+    public void test_deleteAllSongsWithNoTypeException() throws NoSongException {
+        doThrow(new NoSongException()).when(songService).deleteAllSongs();
+
+        ResponseEntity<?> resp = songController.deleteAllSongs();
+        assertEquals(HttpStatus.NO_CONTENT.value(), resp.getStatusCodeValue());
     }
 
 }

@@ -66,25 +66,21 @@ public class MCService {
     }
 
     @Transactional
-    //FIXME try to parse msg as JSON but it's string
-    public String deleteMC(long id){
+    public void deleteMC(long id){
         Optional<MC> oldMC = mcRepository.findById(id);
         if(oldMC.isPresent()) {
             mcRepository.deleteById(id);
-            return "MC has been deleted";
         } else {
-            return "MC with id " + id + " does not exist";
+            throw  new MCNotFoundException(id);
         }
     }
 
     @Transactional
-    public String deleteAllMCs(){
-        long count = mcRepository.count();
-        if(count > 0) {
+    public void deleteAllMCs(){
+        if(mcRepository.count() > 0) {
             mcRepository.deleteAll();
-            return String.format("%d mcs have been deleted", count);
         } else {
-            return "No mc in database";
+            throw new NoMCException();
         }
     }
 }

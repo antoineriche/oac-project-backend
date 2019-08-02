@@ -99,7 +99,27 @@ public class SongController {
     //TODO verify negative id or null id
     @DeleteMapping(value="/songs/{id}")
     public ResponseEntity<?> deleteSong(@PathVariable(value = "id") long id) {
-        return ResponseEntity.ok(songService.deleteSong(id));
+        try {
+            songService.deleteSong(id);
+            return ResponseEntity.ok().build();
+        } catch (SongNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
+    /**
+     * DELETE /songs : delete all songs
+     * @return ResponseEntity with status 200 (OK) and a string as body indicating the action done
+     */
+    @DeleteMapping(value="/songs")
+    public ResponseEntity<?> deleteAllSongs() {
+        try {
+            songService.deleteAllSongs();
+            return ResponseEntity.ok().build();
+        } catch (NoSongException e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
 
 }

@@ -15,6 +15,7 @@ public class ProjectType {
     @GeneratedValue
     private long id;
 
+    //FIXME bug not unique
     @Column(nullable = false, unique = true)
     private String label;
 

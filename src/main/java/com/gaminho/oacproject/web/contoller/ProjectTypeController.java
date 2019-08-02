@@ -95,10 +95,28 @@ public class ProjectTypeController {
      * @param id id of the project type to delete
      * @return ResponseEntity with status 200 (OK) and a string as body indicating the action done
      */
-    //TODO verify negative id or null id
     @DeleteMapping(value="/project-types/{id}")
     public ResponseEntity<?> deleteProjectType(@PathVariable(value = "id") long id) {
-        return ResponseEntity.ok(typeService.deleteProjectType(id));
+        try {
+            typeService.deleteProjectType(id);
+            return ResponseEntity.ok().build();
+        } catch (TypeNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * DELETE /project-types : delete all project types
+     * @return ResponseEntity with status 200 (OK) and a string as body indicating the action done
+     */
+    @DeleteMapping(value="/project-types")
+    public ResponseEntity<?> deleteAllProjectTypes() {
+        try {
+            typeService.deleteAllTypes();
+            return ResponseEntity.ok().build();
+        } catch (NoTypeException e) {
+            return ResponseEntity.noContent().build();
+        }
     }
 
 }

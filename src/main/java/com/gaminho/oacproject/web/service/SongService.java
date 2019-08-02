@@ -64,26 +64,21 @@ public class SongService {
     }
 
     @Transactional
-    //FIXME try to parse msg as JSON but it's string
-    public String deleteSong(long id){
+    public void deleteSong(long id){
         Optional<Song> song = songRepository.findById(id);
         if(song.isPresent()) {
             songRepository.deleteById(id);
-            return "Song has been deleted";
         } else {
-            return "Song with id " + id + " does not exist";
+            throw new SongNotFoundException(id);
         }
     }
 
-    //TODO test
     @Transactional
-    public String deleteAllSongs(){
-        long count = songRepository.count();
-        if(count > 0) {
+    public void deleteAllSongs(){
+        if(songRepository.count() > 0) {
             songRepository.deleteAll();
-            return String.format("%d songs have been deleted", count);
         } else {
-            return "No song in database";
+            throw new NoSongException();
         }
     }
 }

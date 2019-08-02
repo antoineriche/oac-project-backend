@@ -46,7 +46,7 @@ public class SongServiceTests {
 	// GET ALL SONGS
 
 	@Test
-	public void testGetAllSongs() {
+	public void test_getAllSongs() {
 		List<Song> list = new ArrayList<>();
 		list.add(DEFAULT_SONG_1);
 		list.add(DEFAULT_SONG_2);
@@ -59,7 +59,7 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testGetAllSongsWithVoidList() throws NoSongException {
+	public void test_getAllSongsWithEmptyDB() throws NoSongException {
 		expectedEx.expect(NoSongException.class);
 		expectedEx.expectMessage("No song.");
 		songService.getAllSongs();
@@ -68,7 +68,7 @@ public class SongServiceTests {
 	// GET SONG BY ID
 
 	@Test
-	public void testGetSongById(){
+	public void test_getSongById(){
 		when(songRepository.findById(DEFAULT_SONG_1.getId()))
 				.thenReturn(Optional.of(DEFAULT_SONG_1));
 
@@ -78,7 +78,7 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testGetSongByIdNoSongException() throws SongNotFoundException {
+	public void test_getSongByIdWithNotFoundException() throws SongNotFoundException {
 		expectedEx.expect(SongNotFoundException.class);
 		expectedEx.expectMessage("Song with id 3 does not exist.");
 		songService.getSongWithId(3);
@@ -87,14 +87,14 @@ public class SongServiceTests {
 	// SAVE SONG
 
 	@Test
-	public void testSavingSong(){
+	public void test_saveSong(){
 		when(songRepository.save(DEFAULT_SONG_1)).thenReturn(DEFAULT_SONG_1);
 		Song newSong = songService.saveSong(DEFAULT_SONG_1);
 		assertEquals(DEFAULT_SONG_1, newSong);
 	}
 
 	@Test
-	public void testSavingSongWithoutTitleThrowException() throws InvalidSongException {
+	public void test_saveMCWithInvalidData() throws InvalidSongException {
 		expectedEx.expect(InvalidSongException.class);
 		expectedEx.expectMessage("Invalid song.");
 
@@ -107,7 +107,7 @@ public class SongServiceTests {
 	// UPDATE SONG
 
 	@Test
-	public void testUpdatingSong(){
+	public void test_updateSong(){
 
 		when(songRepository.findById(DEFAULT_SONG_1.getId())).thenReturn(Optional.of(DEFAULT_SONG_1));
 
@@ -122,7 +122,7 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testUpdatingSongWithException() throws SongNotFoundException {
+	public void test_updateSongWithNotFoundException() throws SongNotFoundException {
 		expectedEx.expect(SongNotFoundException.class);
 		expectedEx.expectMessage("Song with id 8 does not exist.");
 		songService.updateSong(8L, DEFAULT_SONG_1);
@@ -131,40 +131,35 @@ public class SongServiceTests {
 	// DELETE SONG
 
 	@Test
-	public void testDeleteSongById(){
-		when(songRepository.findById(DEFAULT_SONG_1.getId())).thenReturn(Optional.of(DEFAULT_SONG_1));
+	public void test_deleteSong(){
+		when(songRepository.findById(DEFAULT_SONG_1.getId()))
+				.thenReturn(Optional.of(DEFAULT_SONG_1));
 
-		String s = songService.deleteSong(DEFAULT_SONG_1.getId());
+		songService.deleteSong(DEFAULT_SONG_1.getId());
 		verify(songRepository, times(1)).deleteById(DEFAULT_SONG_1.getId());
-		assertEquals("Song has been deleted", s);
 	}
 
 	@Test
-	public void testDeleteSongByIdWithNoSong(){
-		String s = songService.deleteSong(8L);
-		assertFalse(songRepository.findById(8L).isPresent());
-		assertEquals("Song with id 8 does not exist", s);
+	public void test_deleteSongByIdWithNotFoundException() throws SongNotFoundException{
+		expectedEx.expect(SongNotFoundException.class);
+		expectedEx.expectMessage("Song with id 8 does not exist.");
+		songService.deleteSong(8L);
 	}
 
 	// DELETE ALL
 
 	@Test
-	public void testDeleteAllSongsWithEmptyList() {
-		String s = songService.deleteAllSongs();
-		assertEquals(s, "No song in database");
+	public void test_deleteAllSongs() {
+		when(songRepository.count()).thenReturn(3L);
+		songService.deleteAllSongs();
+		verify(songRepository, times(1)).deleteAll();
 	}
 
 	@Test
-	public void testDeleteAllSongs() {
-		List<Song> list = new ArrayList<>();
-		list.add(DEFAULT_SONG_1);
-		list.add(DEFAULT_SONG_2);
-
-		when(songRepository.count()).thenReturn(Long.valueOf(list.size()));
-
-		String s = songService.deleteAllSongs();
-		assertEquals(s,
-				String.format("%d songs have been deleted", list.size()));
+	public void test_deleteAllSongsWithEmptyList() throws NoSongException {
+		expectedEx.expect(NoSongException.class);
+		expectedEx.expectMessage("No song.");
+		when(songRepository.count()).thenReturn(0L);
+		songService.deleteAllSongs();
 	}
-
 }
