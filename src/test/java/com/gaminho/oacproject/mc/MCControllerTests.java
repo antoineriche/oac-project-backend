@@ -1,6 +1,9 @@
 package com.gaminho.oacproject.mc;
 
-import com.gaminho.oacproject.exception.MCException;
+import com.gaminho.oacproject.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.exception.mc.MCException;
+import com.gaminho.oacproject.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
 import com.gaminho.oacproject.web.contoller.MCController;
 import com.gaminho.oacproject.web.service.MCService;
@@ -45,11 +48,11 @@ public class MCControllerTests {
 
     @Test
     public void testGetAllMCsWithEmptyList() {
-        when(mcService.getAllMCs()).thenThrow(new MCException(MCException.NO_MC));
+        when(mcService.getAllMCs()).thenThrow(new NoMCException());
         ResponseEntity<?> resp = mcController.getAllMCs();
 
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals(MCException.NO_MC, resp.getBody());
+        assertEquals("No MC.", resp.getBody());
     }
 
     @Test
@@ -75,13 +78,15 @@ public class MCControllerTests {
     }
 
     @Test
-    public void testGetMCByIdNoMCException() throws MCException {
+    public void testGetMCByIdNoMCException() throws MCNotFoundException {
         when(mcService.getMCWithId(DEFAULT_MC_1.getId()))
-                .thenThrow(new MCException("No mc found for id " + DEFAULT_MC_1.getId()));
+                .thenThrow(new MCNotFoundException(DEFAULT_MC_1.getId()));
 
         ResponseEntity<?> resp = mcController.getMCWithId(DEFAULT_MC_1.getId());
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("No mc found for id " + DEFAULT_MC_1.getId(), resp.getBody());
+        assertEquals(
+                String.format("MC with id %d does not exist.", DEFAULT_MC_1.getId()),
+                resp.getBody());
     }
 
     // SAVE MC
@@ -96,12 +101,12 @@ public class MCControllerTests {
     }
 
     @Test
-    public void testSavingMCWithouNameThrowException() throws MCException {
-        when(mcService.saveMC(DEFAULT_MC_1)).thenThrow(new MCException(MCException.INVALID_MC));
+    public void testSavingMCWithoutNameThrowException() throws InvalidMCException {
+        when(mcService.saveMC(DEFAULT_MC_1)).thenThrow(new InvalidMCException());
 
         ResponseEntity<?> resp = mcController.createMC(DEFAULT_MC_1);
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
-        assertEquals(MCException.INVALID_MC, resp.getBody());
+        assertEquals("Invalid MC.", resp.getBody());
     }
 
     // UPDATE MC
@@ -115,15 +120,16 @@ public class MCControllerTests {
         assertEquals(DEFAULT_MC_1, resp.getBody());
     }
 
-
     @Test
-    public void testUpdatingMCWithNotFoundMC(){
+    public void testUpdatingMCWithNotFoundMC() throws MCNotFoundException {
         when(mcService.updateMC(DEFAULT_MC_1.getId(), DEFAULT_MC_1))
-                .thenThrow(new MCException("MC with id " + DEFAULT_MC_1.getId() + " does not exist"));
+                .thenThrow(new MCNotFoundException(DEFAULT_MC_1.getId()));
 
         ResponseEntity<?> resp = mcController.updateMC(DEFAULT_MC_1.getId(), DEFAULT_MC_1);
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
-        assertEquals("MC with id " + DEFAULT_MC_1.getId() + " does not exist", resp.getBody());
+        assertEquals(
+                String.format("MC with id %d does not exist.", DEFAULT_MC_1.getId()),
+                resp.getBody());
     }
 
     //DELETE MC
@@ -131,11 +137,13 @@ public class MCControllerTests {
     @Test
     public void testDeleteMC(){
         when(mcService.deleteMC(DEFAULT_MC_1.getId()))
-                .thenReturn("MC with id " + DEFAULT_MC_1.getId() + " does not exist");
+                .thenReturn(String.format("MC with id %d does not exist.", DEFAULT_MC_1.getId()));
 
         ResponseEntity<?> resp = mcController.deleteMC(DEFAULT_MC_1.getId());
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("MC with id " + DEFAULT_MC_1.getId() + " does not exist", resp.getBody());
+        assertEquals(
+                String.format("MC with id %d does not exist.", DEFAULT_MC_1.getId()),
+                resp.getBody());
     }
 
 }

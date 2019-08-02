@@ -1,9 +1,10 @@
 package com.gaminho.oacproject.web.contoller;
 
-import com.gaminho.oacproject.exception.MCException;
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.exception.mc.MCException;
+import com.gaminho.oacproject.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
-import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.service.MCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class MCController {
     public ResponseEntity<?> getMCWithId(@PathVariable(value = "id") long id) {
         try {
             return ResponseEntity.ok(mcService.getMCWithId(id));
-        } catch (MCException e){
+        } catch (MCNotFoundException e){
             return ResponseEntity.ok(e.getMessage());
         }
     }
@@ -43,7 +44,7 @@ public class MCController {
         try {
             List<MC> list = mcService.getAllMCs();
             return ResponseEntity.ok(list);
-        } catch (MCException e){
+        } catch (NoMCException e){
 //            return ResponseEntity.noContent().build();
             return ResponseEntity.ok(e.getMessage());
         }
@@ -64,7 +65,7 @@ public class MCController {
                     .buildAndExpand(newMC.getId())
                     .toUri();
             return ResponseEntity.created(location).body(newMC);
-        } catch (MCException e){
+        } catch (InvalidMCException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -84,7 +85,7 @@ public class MCController {
                     .build()
                     .toUri();
             return ResponseEntity.created(location).body(newMC);
-        } catch (MCException e){
+        } catch (MCNotFoundException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -1,6 +1,8 @@
 package com.gaminho.oacproject.song;
 
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.song.InvalidSongException;
+import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.contoller.SongController;
 import com.gaminho.oacproject.web.service.SongService;
@@ -18,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.gaminho.oacproject.utils.DefaultValues.DEFAULT_SONG_1;
@@ -48,11 +49,11 @@ public class SongControllerTests {
 
     @Test
     public void testGetAllSongsWithEmptyList() {
-        when(songService.getAllSongs()).thenThrow(new SongException("No songs"));
+        when(songService.getAllSongs()).thenThrow(new NoSongException());
         ResponseEntity<?> resp = songController.getAllSongs();
 
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("No songs", resp.getBody());
+        assertEquals("No song.", resp.getBody());
     }
 
     @Test
@@ -78,13 +79,15 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testGetSongByIdNoSongException() throws SongException {
+    public void testGetSongByIdNoSongException() throws SongNotFoundException {
         when(songService.getSongWithId(DEFAULT_SONG_1.getId()))
-                .thenThrow(new SongException("No song found for id " + DEFAULT_SONG_1.getId()));
+                .thenThrow(new SongNotFoundException(DEFAULT_SONG_1.getId()));
 
         ResponseEntity<?> resp = songController.getSongWithId(DEFAULT_SONG_1.getId());
         assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
-        assertEquals("No song found for id " + DEFAULT_SONG_1.getId(), resp.getBody());
+        assertEquals(
+                String.format("Song with id %d does not exist.", DEFAULT_SONG_1.getId()),
+                resp.getBody());
     }
 
 
@@ -100,12 +103,12 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testSavingSongWithoutTitleThrowException() throws SongException {
-        when(songService.saveSong(DEFAULT_SONG_1)).thenThrow(new SongException("Invalid song"));
+    public void testSavingSongWithoutTitleThrowException() throws InvalidSongException {
+        when(songService.saveSong(DEFAULT_SONG_1)).thenThrow(new InvalidSongException());
 
         ResponseEntity<?> resp = songController.createSong(DEFAULT_SONG_1);
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
-        assertEquals("Invalid song", resp.getBody());
+        assertEquals("Invalid song.", resp.getBody());
     }
 
     // UPDATE SONG
@@ -121,13 +124,15 @@ public class SongControllerTests {
     }
 
     @Test
-    public void testUpdatingSongWithNotFoundSong(){
+    public void testUpdatingSongWithNotFoundSong() throws SongNotFoundException {
         when(songService.updateSong(DEFAULT_SONG_1.getId(), DEFAULT_SONG_1))
-                .thenThrow(new SongException("Song with id " + DEFAULT_SONG_1.getId() + " does not exist"));
+                .thenThrow(new SongNotFoundException(DEFAULT_SONG_1.getId()));
 
         ResponseEntity<?> resp = songController.updateSong(DEFAULT_SONG_1.getId(), DEFAULT_SONG_1);
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
-        assertEquals("Song with id " + DEFAULT_SONG_1.getId() + " does not exist", resp.getBody());
+        assertEquals(
+                String.format("Song with id %d does not exist.", DEFAULT_SONG_1.getId()),
+                resp.getBody());
     }
 
     //DELETE SONG

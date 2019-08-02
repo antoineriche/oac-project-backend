@@ -1,10 +1,11 @@
 package com.gaminho.oacproject.mc;
 
 import com.gaminho.oacproject.dao.MCRepository;
-import com.gaminho.oacproject.exception.MCException;
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.exception.mc.MCException;
+import com.gaminho.oacproject.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
-import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.service.MCService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gaminho.oacproject.utils.DefaultValues.*;
-import static com.gaminho.oacproject.utils.DefaultValues.DEFAULT_SONG_2;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -61,8 +61,8 @@ public class MCServiceTests {
 
 	@Test
 	public void testGetAllSongsWithVoidList() throws MCException {
-		expectedEx.expect(MCException.class);
-		expectedEx.expectMessage(MCException.NO_MC);
+		expectedEx.expect(NoMCException.class);
+		expectedEx.expectMessage("No MC.");
 		mcService.getAllMCs();
 	}
 
@@ -80,8 +80,8 @@ public class MCServiceTests {
 
 	@Test
 	public void testGetMCByIdNoSongException() throws MCException {
-		expectedEx.expect(MCException.class);
-		expectedEx.expectMessage("No mc found for id 3");
+		expectedEx.expect(MCNotFoundException.class);
+		expectedEx.expectMessage("MC with id 3 does not exist.");
 		mcService.getMCWithId(3);
 	}
 
@@ -96,8 +96,8 @@ public class MCServiceTests {
 
 	@Test
 	public void testSavingMCWithoutNameThrowException() throws MCException {
-		expectedEx.expect(MCException.class);
-		expectedEx.expectMessage(MCException.INVALID_MC);
+		expectedEx.expect(InvalidMCException.class);
+		expectedEx.expectMessage("Invalid MC.");
 
 		MC mc = new MC();
 		mc.setId(59L);
@@ -124,8 +124,8 @@ public class MCServiceTests {
 
 	@Test
 	public void testUpdatingSongWithException() throws MCException {
-		expectedEx.expect(MCException.class);
-		expectedEx.expectMessage("MC with id 8 does not exist");
+		expectedEx.expect(MCNotFoundException.class);
+		expectedEx.expectMessage("MC with id 8 does not exist.");
 		mcService.updateMC(8L, DEFAULT_MC_1);
 	}
 

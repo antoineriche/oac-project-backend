@@ -1,7 +1,9 @@
 package com.gaminho.oacproject.song;
 
 import com.gaminho.oacproject.dao.SongRepository;
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.song.InvalidSongException;
+import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.service.SongService;
 import org.junit.Before;
@@ -16,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,9 +59,9 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testGetAllSongsWithVoidList() throws SongException {
-		expectedEx.expect(SongException.class);
-		expectedEx.expectMessage("No songs");
+	public void testGetAllSongsWithVoidList() throws NoSongException {
+		expectedEx.expect(NoSongException.class);
+		expectedEx.expectMessage("No song.");
 		songService.getAllSongs();
 	}
 
@@ -77,9 +78,9 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testGetSongByIdNoSongException() throws SongException {
-		expectedEx.expect(SongException.class);
-		expectedEx.expectMessage("No song found for id 3");
+	public void testGetSongByIdNoSongException() throws SongNotFoundException {
+		expectedEx.expect(SongNotFoundException.class);
+		expectedEx.expectMessage("Song with id 3 does not exist.");
 		songService.getSongWithId(3);
 	}
 
@@ -93,9 +94,9 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testSavingSongWithoutTitleThrowException() throws SongException {
-		expectedEx.expect(SongException.class);
-		expectedEx.expectMessage("Invalid song");
+	public void testSavingSongWithoutTitleThrowException() throws InvalidSongException {
+		expectedEx.expect(InvalidSongException.class);
+		expectedEx.expectMessage("Invalid song.");
 
 		Song song = new Song();
 		song.setId(59L);
@@ -121,9 +122,9 @@ public class SongServiceTests {
 	}
 
 	@Test
-	public void testUpdatingSongWithException() throws SongException {
-		expectedEx.expect(SongException.class);
-		expectedEx.expectMessage("Song with id 8 does not exist");
+	public void testUpdatingSongWithException() throws SongNotFoundException {
+		expectedEx.expect(SongNotFoundException.class);
+		expectedEx.expectMessage("Song with id 8 does not exist.");
 		songService.updateSong(8L, DEFAULT_SONG_1);
 	}
 

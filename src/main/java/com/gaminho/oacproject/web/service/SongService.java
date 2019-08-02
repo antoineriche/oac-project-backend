@@ -1,7 +1,9 @@
 package com.gaminho.oacproject.web.service;
 
 import com.gaminho.oacproject.dao.SongRepository;
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.song.InvalidSongException;
+import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class SongService {
     public Song getSongWithId(long id) {
         Optional<Song> song = songRepository.findById(id);
         if (!song.isPresent()) {
-            throw new SongException("No song found for id " + id);
+            throw new SongNotFoundException(id);
         }
         return song.get();
     }
@@ -30,7 +32,7 @@ public class SongService {
     public List<Song> getAllSongs(){
         List<Song> songs = songRepository.findAll();
         if(songs.isEmpty()) {
-            throw new SongException(SongException.NO_SONG);
+            throw new NoSongException();
         } else {
             return songs;
         }
@@ -43,7 +45,7 @@ public class SongService {
             // TODO what to do if there's already an id ?
             return songRepository.save(songToSave);
         } else {
-            throw new SongException("Invalid song");
+            throw new InvalidSongException();
         }
     }
 
@@ -57,7 +59,7 @@ public class SongService {
             songRepository.flush();
             return song;
         } else {
-            throw new SongException("Song with id " + id + " does not exist");
+            throw new SongNotFoundException(id);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.gaminho.oacproject.web.contoller;
 
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.song.InvalidSongException;
+import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class SongController {
         try {
             List<Song> list = songService.getAllSongs();
             return ResponseEntity.ok(list);
-        } catch (SongException e){
+        } catch (NoSongException e){
 //            return ResponseEntity.noContent().build();
             return ResponseEntity.ok(e.getMessage());
         }
@@ -44,7 +46,7 @@ public class SongController {
     public ResponseEntity<?> getSongWithId(@PathVariable(value = "id") long id) {
         try {
             return ResponseEntity.ok(songService.getSongWithId(id));
-        } catch (SongException e){
+        } catch (SongNotFoundException e){
             return ResponseEntity.ok(e.getMessage());
         }
     }
@@ -64,7 +66,7 @@ public class SongController {
                     .buildAndExpand(newSong.getId())
                     .toUri();
             return ResponseEntity.created(location).body(newSong);
-        } catch (SongException e){
+        } catch (InvalidSongException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -84,7 +86,7 @@ public class SongController {
                     .build()
                     .toUri();
             return ResponseEntity.created(location).body(newSong);
-        } catch (SongException e){
+        } catch (SongNotFoundException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

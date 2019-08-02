@@ -1,10 +1,11 @@
 package com.gaminho.oacproject.web.service;
 
 import com.gaminho.oacproject.dao.MCRepository;
-import com.gaminho.oacproject.exception.MCException;
-import com.gaminho.oacproject.exception.SongException;
+import com.gaminho.oacproject.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.exception.mc.MCException;
+import com.gaminho.oacproject.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
-import com.gaminho.oacproject.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class MCService {
     public MC getMCWithId(long id) {
         Optional<MC> mc = mcRepository.findById(id);
         if (!mc.isPresent()) {
-            throw new MCException("No mc found for id " + id);
+            throw new MCNotFoundException(id);
         }
         return mc.get();
     }
@@ -31,7 +32,7 @@ public class MCService {
     public List<MC> getAllMCs(){
         List<MC> mcs = mcRepository.findAll();
         if(mcs.isEmpty()) {
-            throw new MCException(MCException.NO_MC);
+            throw new NoMCException();
         } else {
             return mcs;
         }
@@ -44,7 +45,7 @@ public class MCService {
             // TODO what to do if there's already an id ?
             return mcRepository.save(mcToSave);
         } else {
-            throw new MCException(MCException.INVALID_MC);
+            throw new InvalidMCException();
         }
     }
 
@@ -61,7 +62,7 @@ public class MCService {
             mcRepository.flush();
             return mc;
         } else {
-            throw new MCException("MC with id " + id + " does not exist");
+            throw new MCNotFoundException(id);
         }
     }
 
