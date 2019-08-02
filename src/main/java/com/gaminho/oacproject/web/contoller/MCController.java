@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+@RestController
+@CrossOrigin(value = "http://localhost:4200")
 public class MCController {
 
     @Autowired
