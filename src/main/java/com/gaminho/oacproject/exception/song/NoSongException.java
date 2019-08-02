@@ -1,13 +1,16 @@
 package com.gaminho.oacproject.exception.song;
 
-public class NoSongException extends SongException {
+import com.gaminho.oacproject.exception.CRUDException;
+
+public class NoSongException extends CRUDException
+{
 
     public NoSongException() {
-        super(SongException.NO_SONG_CODE);
+        super(CRUDException.NO_DATA_CODE);
     }
 
     @Override
     protected String getExceptionMessage() {
-        return "No song.";
+        return noDataMessage("song");
     }
 }

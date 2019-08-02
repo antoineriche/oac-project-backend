@@ -1,14 +1,16 @@
 package com.gaminho.oacproject.exception.song;
 
-public class InvalidSongException extends SongException {
+import com.gaminho.oacproject.exception.CRUDException;
+
+public class InvalidSongException extends CRUDException {
 
     public InvalidSongException() {
-        super(SongException.INVALID_SONG_CODE);
+        super(CRUDException.INVALID_DATA_CODE);
     }
 
     @Override
     public String getExceptionMessage() {
-        return "Invalid song.";
+        return invalidDataMessage("song");
     }
 
 }

@@ -1,7 +1,6 @@
 package com.gaminho.oacproject.exception;
 
 import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +15,6 @@ public class ExceptionTest {
     @Test
     public void testGetExceptionCode() {
         InvalidMCException exception = new InvalidMCException();
-        assertEquals(MCException.INVALID_MC_CODE, exception.getExceptionCode());
+        assertEquals(CRUDException.INVALID_DATA_CODE, exception.getExceptionCode());
     }
 }

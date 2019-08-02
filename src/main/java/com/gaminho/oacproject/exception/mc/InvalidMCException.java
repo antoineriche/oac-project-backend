@@ -1,13 +1,15 @@
 package com.gaminho.oacproject.exception.mc;
 
-public class InvalidMCException extends MCException {
+import com.gaminho.oacproject.exception.CRUDException;
+
+public class InvalidMCException extends CRUDException {
 
     public InvalidMCException() {
-        super(MCException.INVALID_MC_CODE);
+        super(CRUDException.INVALID_DATA_CODE);
     }
 
     @Override
     public String getExceptionMessage() {
-        return "Invalid MC.";
+        return invalidDataMessage("MC");
     }
 }

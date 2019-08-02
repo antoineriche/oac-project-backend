@@ -1,7 +1,6 @@
 package com.gaminho.oacproject.mc;
 
 import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCException;
 import com.gaminho.oacproject.exception.mc.MCNotFoundException;
 import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;

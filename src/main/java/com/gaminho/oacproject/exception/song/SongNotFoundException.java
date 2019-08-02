@@ -1,20 +1,21 @@
 package com.gaminho.oacproject.exception.song;
 
 
-public class SongNotFoundException extends SongException {
+import com.gaminho.oacproject.exception.CRUDException;
+
+public class SongNotFoundException extends CRUDException {
 
     private long idSong;
 
     public SongNotFoundException(long pISong) {
-        super(SongException.SONG_NOT_FOUND_CODE);
+        super(CRUDException.DATA_NOT_FOUND_CODE);
         idSong = pISong;
     }
 
     @Override
     public String getExceptionMessage() {
-        return String.format("Song with id %d does not exist.", this.idSong);
+        return dataNotFoundMessage("Song", this.idSong);
     }
-
 
 }
 

@@ -1,13 +1,15 @@
 package com.gaminho.oacproject.exception.mc;
 
-public class NoMCException extends MCException {
+import com.gaminho.oacproject.exception.CRUDException;
+
+public class NoMCException extends CRUDException {
 
     public NoMCException() {
-        super(MCException.NO_MC_CODE);
+        super(CRUDException.NO_DATA_CODE);
     }
 
     @Override
     protected String getExceptionMessage() {
-        return "No MC.";
+        return noDataMessage("MC");
     }
 }

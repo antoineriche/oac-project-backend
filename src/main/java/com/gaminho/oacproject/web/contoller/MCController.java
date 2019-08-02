@@ -1,7 +1,6 @@
 package com.gaminho.oacproject.web.contoller;
 
 import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCException;
 import com.gaminho.oacproject.exception.mc.MCNotFoundException;
 import com.gaminho.oacproject.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
@@ -102,7 +101,5 @@ public class MCController {
     public ResponseEntity<?> deleteMC(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(mcService.deleteMC(id));
     }
-
-
 
 }
