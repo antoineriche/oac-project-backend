@@ -1,9 +1,9 @@
 package com.gaminho.oacproject.project;
 
 import com.gaminho.oacproject.dao.ProjectTypeRepository;
-import com.gaminho.oacproject.exception.project.InvalidTypeException;
-import com.gaminho.oacproject.exception.project.NoTypeException;
-import com.gaminho.oacproject.exception.project.TypeNotFoundException;
+import com.gaminho.oacproject.error.exception.project.InvalidTypeException;
+import com.gaminho.oacproject.error.exception.project.NoTypeException;
+import com.gaminho.oacproject.error.exception.project.TypeNotFoundException;
 import com.gaminho.oacproject.model.ProjectType;
 import com.gaminho.oacproject.web.service.ProjectTypeService;
 import org.junit.Before;

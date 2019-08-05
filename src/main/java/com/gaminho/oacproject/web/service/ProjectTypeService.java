@@ -1,10 +1,11 @@
 package com.gaminho.oacproject.web.service;
 
 import com.gaminho.oacproject.dao.ProjectTypeRepository;
-import com.gaminho.oacproject.exception.project.InvalidTypeException;
-import com.gaminho.oacproject.exception.project.NoTypeException;
-import com.gaminho.oacproject.exception.project.TypeNotFoundException;
+import com.gaminho.oacproject.error.exception.project.InvalidTypeException;
+import com.gaminho.oacproject.error.exception.project.NoTypeException;
+import com.gaminho.oacproject.error.exception.project.TypeNotFoundException;
 import com.gaminho.oacproject.model.ProjectType;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ public class ProjectTypeService {
     }
 
     @Transactional
-    public ProjectType saveProjectType(ProjectType typeToSave){
+    public ProjectType saveProjectType(ProjectType typeToSave) throws InvalidTypeException {
         if(ProjectType.isValid(typeToSave)) {
             return typeRepository.save(typeToSave);
         } else {

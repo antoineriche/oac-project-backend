@@ -1,6 +1,6 @@
-package com.gaminho.oacproject.exception.song;
+package com.gaminho.oacproject.error.exception.song;
 
-import com.gaminho.oacproject.exception.CRUDException;
+import com.gaminho.oacproject.error.exception.CRUDException;
 
 public class NoSongException extends CRUDException
 {

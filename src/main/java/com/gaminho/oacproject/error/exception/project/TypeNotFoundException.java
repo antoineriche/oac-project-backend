@@ -1,7 +1,7 @@
-package com.gaminho.oacproject.exception.project;
+package com.gaminho.oacproject.error.exception.project;
 
 
-import com.gaminho.oacproject.exception.CRUDException;
+import com.gaminho.oacproject.error.exception.CRUDException;
 
 public class TypeNotFoundException extends CRUDException {
 

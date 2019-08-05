@@ -1,8 +1,10 @@
 package com.gaminho.oacproject.project;
 
-import com.gaminho.oacproject.exception.project.InvalidTypeException;
-import com.gaminho.oacproject.exception.project.NoTypeException;
-import com.gaminho.oacproject.exception.project.TypeNotFoundException;
+import com.gaminho.oacproject.error.OACApiError;
+import com.gaminho.oacproject.error.OACApiErrorTests;
+import com.gaminho.oacproject.error.exception.project.InvalidTypeException;
+import com.gaminho.oacproject.error.exception.project.NoTypeException;
+import com.gaminho.oacproject.error.exception.project.TypeNotFoundException;
 import com.gaminho.oacproject.model.ProjectType;
 import com.gaminho.oacproject.web.contoller.ProjectTypeController;
 import com.gaminho.oacproject.web.service.ProjectTypeService;
@@ -106,9 +108,18 @@ public class ProjectTypeControllerTests {
         when(typeService.saveProjectType(DEFAULT_PROJECT_TYPE_1))
                 .thenThrow(new InvalidTypeException());
 
+        typeController.createProjectType(DEFAULT_PROJECT_TYPE_1);
+
+
         ResponseEntity<?> resp = typeController.createProjectType(DEFAULT_PROJECT_TYPE_1);
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
-        assertEquals("Invalid project type.", resp.getBody());
+
+        OACApiError error = new OACApiError(
+                "InvalidTypeException",
+                HttpStatus.BAD_REQUEST,
+                "Invalid project type.");
+
+        assertEquals("Invalid project type.", error.getErrorDetail());
     }
 
     // UPDATE TYPE

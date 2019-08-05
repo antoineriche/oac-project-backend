@@ -1,4 +1,4 @@
-package com.gaminho.oacproject.exception;
+package com.gaminho.oacproject.error.exception;
 
 public abstract class OACProjectException extends RuntimeException {
 

@@ -1,9 +1,8 @@
 package com.gaminho.oacproject.mc;
 
-import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCNotFoundException;
-import com.gaminho.oacproject.exception.mc.NoMCException;
-import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.error.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.error.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.error.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
 import com.gaminho.oacproject.web.contoller.MCController;
 import com.gaminho.oacproject.web.service.MCService;

@@ -1,6 +1,6 @@
-package com.gaminho.oacproject.exception;
+package com.gaminho.oacproject.error.exception;
 
-import com.gaminho.oacproject.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.error.exception.mc.InvalidMCException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

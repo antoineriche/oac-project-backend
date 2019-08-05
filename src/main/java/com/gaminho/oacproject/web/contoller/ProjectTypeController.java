@@ -1,9 +1,10 @@
 package com.gaminho.oacproject.web.contoller;
 
-import com.gaminho.oacproject.exception.project.InvalidTypeException;
-import com.gaminho.oacproject.exception.project.NoTypeException;
-import com.gaminho.oacproject.exception.project.TypeNotFoundException;
+import com.gaminho.oacproject.error.exception.project.InvalidTypeException;
+import com.gaminho.oacproject.error.exception.project.NoTypeException;
+import com.gaminho.oacproject.error.exception.project.TypeNotFoundException;
 import com.gaminho.oacproject.model.ProjectType;
+import com.gaminho.oacproject.web.OACExceptionHandler;
 import com.gaminho.oacproject.web.service.ProjectTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class ProjectTypeController {
     }
 
     /**
-     * GET  /project-types/:id : get the "id" song.
+     * GET  /project-types/:id : get the "id" project type.
      *
      * @param id the id of the project type to retrieve
      * @return the ResponseEntity with status 200 (OK) with project type as body or with status 404 (Not Found)
@@ -51,12 +52,12 @@ public class ProjectTypeController {
     }
 
     /**
-     * POST /project-types : create a new song
+     * POST /project-types : create a new project type
      * @param projectType song to save
-     * @return ResponseEntity with status 201 (created) with song as body or a status 400 (Bad request)
+     * @return ResponseEntity with status 201 (created) with type as body or a status 400 (Bad request)
      */
     @PostMapping(value = "/project-types")
-    public ResponseEntity<?> createProjectType(@Valid @RequestBody ProjectType projectType){
+    public ResponseEntity<?> createProjectType(@RequestBody ProjectType projectType){
         try {
             ProjectType newType = typeService.saveProjectType(projectType);
             URI location = ServletUriComponentsBuilder
@@ -66,7 +67,7 @@ public class ProjectTypeController {
                     .toUri();
             return ResponseEntity.created(location).body(newType);
         } catch (InvalidTypeException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return OACExceptionHandler.handleInvalidTypeException(e);
         }
     }
 

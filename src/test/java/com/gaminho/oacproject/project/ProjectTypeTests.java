@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-
 public class ProjectTypeTests {
 
     @Test

@@ -1,9 +1,9 @@
 package com.gaminho.oacproject.web.service;
 
 import com.gaminho.oacproject.dao.SongRepository;
-import com.gaminho.oacproject.exception.song.InvalidSongException;
-import com.gaminho.oacproject.exception.song.NoSongException;
-import com.gaminho.oacproject.exception.song.SongNotFoundException;
+import com.gaminho.oacproject.error.exception.song.InvalidSongException;
+import com.gaminho.oacproject.error.exception.song.NoSongException;
+import com.gaminho.oacproject.error.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

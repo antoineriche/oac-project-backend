@@ -1,8 +1,8 @@
 package com.gaminho.oacproject.song;
 
-import com.gaminho.oacproject.exception.song.InvalidSongException;
-import com.gaminho.oacproject.exception.song.NoSongException;
-import com.gaminho.oacproject.exception.song.SongNotFoundException;
+import com.gaminho.oacproject.error.exception.song.InvalidSongException;
+import com.gaminho.oacproject.error.exception.song.NoSongException;
+import com.gaminho.oacproject.error.exception.song.SongNotFoundException;
 import com.gaminho.oacproject.model.Song;
 import com.gaminho.oacproject.web.contoller.SongController;
 import com.gaminho.oacproject.web.service.SongService;

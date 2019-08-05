@@ -1,9 +1,9 @@
 package com.gaminho.oacproject.web.service;
 
 import com.gaminho.oacproject.dao.MCRepository;
-import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCNotFoundException;
-import com.gaminho.oacproject.exception.mc.NoMCException;
+import com.gaminho.oacproject.error.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.error.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.error.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

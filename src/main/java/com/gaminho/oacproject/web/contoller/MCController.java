@@ -1,10 +1,8 @@
 package com.gaminho.oacproject.web.contoller;
 
-import com.gaminho.oacproject.exception.mc.InvalidMCException;
-import com.gaminho.oacproject.exception.mc.MCNotFoundException;
-import com.gaminho.oacproject.exception.mc.NoMCException;
-import com.gaminho.oacproject.exception.project.TypeNotFoundException;
-import com.gaminho.oacproject.exception.song.NoSongException;
+import com.gaminho.oacproject.error.exception.mc.InvalidMCException;
+import com.gaminho.oacproject.error.exception.mc.MCNotFoundException;
+import com.gaminho.oacproject.error.exception.mc.NoMCException;
 import com.gaminho.oacproject.model.MC;
 import com.gaminho.oacproject.web.service.MCService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,7 @@ public class MCController {
         }
     }
 
+    //FIXME review the response code cause ut leads to client error
     /**
      * GET /mcs : get all mcs
      * @return the ResponseEntity with status 200 (OK) and the list of {@link MC} or a message of empty data

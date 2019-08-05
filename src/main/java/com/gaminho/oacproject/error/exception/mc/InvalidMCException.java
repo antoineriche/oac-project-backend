@@ -1,6 +1,6 @@
-package com.gaminho.oacproject.exception.mc;
+package com.gaminho.oacproject.error.exception.mc;
 
-import com.gaminho.oacproject.exception.CRUDException;
+import com.gaminho.oacproject.error.exception.CRUDException;
 
 public class InvalidMCException extends CRUDException {
 
